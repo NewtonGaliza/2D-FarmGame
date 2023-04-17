@@ -10,6 +10,8 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private float speed = 2f;
     private Vector2 motionVector;
     private Animator animator;
+    public Vector2 lastMotionVector;
+    public bool moving;
 
 
     
@@ -21,13 +23,27 @@ public class CharacterController2D : MonoBehaviour
 
     private void Update() 
     {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
         motionVector = new Vector2(
-            Input.GetAxisRaw("Horizontal"),
-            Input.GetAxisRaw("Vertical")
+            horizontal,
+            vertical
         );
 
-        animator.SetFloat("horizontal", Input.GetAxisRaw("Horizontal"));
-        animator.SetFloat("vertical", Input.GetAxisRaw("Vertical"));
+        animator.SetFloat("horizontal", horizontal);
+        animator.SetFloat("vertical", vertical);
+
+        moving = horizontal != 0 || vertical != 0;
+        animator.SetBool("moving", moving);
+
+        if(horizontal != 0 || vertical != 0)
+        {
+            lastMotionVector = new Vector2(horizontal, vertical).normalized;
+
+            animator.SetFloat("lastHorizontal", horizontal);
+            animator.SetFloat("lastVertical", vertical);
+        }
     }
 
     // Update is called once per frame
